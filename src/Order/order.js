@@ -2,6 +2,7 @@ import React from 'react';
 import './order.css';
 import {Col, Row, Container} from 'reactstrap';
 import Result from './orders.json';
+import _ from 'lodash'
 const moment = require('moment');
 
 const getAddress = function(address){
@@ -46,13 +47,33 @@ const buttonColor = function(status){
   }
 }
 
+
+
 class Order extends React.Component{
   constructor(props){
     super(props);
     this.state = {
       orderData : Result.response.orders
     }
+
+    this.sortDate = this.sortDate.bind(this);
   }
+  
+  sortDate = function(result){
+      let sortedArray = _.orderBy(result, ["updatedAt"], ["desc"]);
+  //     (order) =>{
+  //       let newDate = new Date(order.updatedAt)
+        
+  //       return moment(newDate).format("Do MMM YYYY, h:mm a")
+  //       debugger
+        
+  // })
+      console.log(sortedArray)
+      this.setState({
+        orderData: sortedArray
+      });
+}
+
   
   render(){
     return(
@@ -65,9 +86,9 @@ class Order extends React.Component{
                 <Col md={{size: 3, offset: 0}} className="light-class">
                   Order Number:
                 </Col>
-                <Col md={{size: 3, offset: 0}} className="light-class">
+                <Col md={{size: 3, offset: 0}} className="light-class" onClick={() => this.sortDate(this.state.orderData)} >
                   Order Placed: 
-                  <i className="fas fa-sort-down"></i>
+                  <img className= "svg-class" src={require("./sort.svg")} alt="sort logo" />
                 </Col>
                 <Col md={{size: 3, offset: 0}} className="light-class">
                   Ship To:

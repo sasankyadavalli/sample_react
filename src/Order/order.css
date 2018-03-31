@@ -1,0 +1,60 @@
+.order-number{
+  background-color: white;
+  margin-top: 50px;
+  box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.2), 0 6px 30px 0 rgba(0, 0, 0, 0.19);
+}
+
+.bold-class{
+  font-weight: bold;
+}
+
+.light-class{
+  font-weight: lighter;
+}
+
+.button-size{
+  width: 200px;
+  height: 40px;
+  margin-top: 10px; 
+  margin-left: 10px;
+  margin: 15px;
+  background-color: #00a651;
+  color: white;
+  border-radius: 10px;
+}
+
+.image-column{
+  height: 150px;
+  width: 150px;
+}
+
+.image-name{
+  height: 135px;
+  width: 135px;
+}
+
+.product-value{
+  margin-left: 7px;
+}
+
+.text-class{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.cancelled-button{
+  background-color: #bd1701;
+}
+
+.green-button{
+  background-color: #00a651;
+}
+
+.product-column{
+  margin-top: 35px;
+}
+
+.sort-icon{
+  background-color: black; 
+}

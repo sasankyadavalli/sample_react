@@ -8,11 +8,12 @@ import routes from './routes';
 import {Provider} from 'react-redux';
 import { createStore } from 'redux'; 
 import TodoReducers from './reducers';
+import Order from './Order/order';
 
 let store = createStore(TodoReducers); 
 
 const app = document.getElementById("root");
 
 ReactDOM.render( 
-  <Login></Login>, app
+  <Order></Order>, app
 );

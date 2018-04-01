@@ -3,6 +3,7 @@ import './order.css';
 import {Col, Row, Container} from 'reactstrap';
 import _ from 'lodash';
 import $ from 'jquery';
+import PropTypes from 'prop-types';
 
 const moment = require('moment');
 
@@ -17,15 +18,15 @@ const getAddress = function(address){
   }
 }
 
-const getFullAddress = function(address){
-  try {
-    let addressJson = JSON.parse(address)
-    console.log(addressJson)
-  }
-  catch(err) {
-    return "Cannot parse address object"
-  }
-}
+// const getFullAddress = function(address){
+//   try {
+//     let addressJson = JSON.parse(address)
+//     console.log(addressJson)
+//   }
+//   catch(err) {
+//     return "Cannot parse address object"
+//   }
+// }
 
 const formatTimeStamp = function(timestamp){
   let date = new Date(timestamp)
@@ -59,7 +60,16 @@ class Order extends React.Component{
     }
 
     this.sortDate = this.sortDate.bind(this);
+    this.logout = this.logout.bind(this);
   }
+  
+  logout = function(){
+    localStorage.removeItem("user_token")
+    localStorage.removeItem("user_name")
+    localStorage.removeItem("user_group")
+
+    this.context.router.history.push('/');
+  } 
   
   sortDate = function(result){
       let sortedArray = _.orderBy(result, ["updatedAt"], ["desc"]);
@@ -87,7 +97,7 @@ class Order extends React.Component{
           "Content-Type": "application/json"
          },
          data: JSON.stringify({
-          "userName": "mayank@thescalelabs.com",
+          "userName": localStorage.getItem('user_name'),
           "user": {
             "sellerName": "orders@thescalelabs.com"
           }
@@ -104,7 +114,7 @@ class Order extends React.Component{
    }
    else{
     
-    this.context.history.push('/');
+    this.context.router.history.push('/');
    
    }
   
@@ -112,8 +122,19 @@ class Order extends React.Component{
 
   
   render(){
+    if(this.state.orderData.length > 0) {
     return(
       <div>
+        <Row>
+            <Col md={{size: 3, offset:5}} className="scale-logo">
+              <img className="scale-img" src={require("../Login/scale_labs.png")} alt="scale logo"/>
+            </Col>
+            <Col md={{size: 2, offset: 2}} className="logout-bar">
+              <img className="logout-img" src={require("./logout.svg")} alt="logout svg" onClick={this.logout}/>
+              <br />
+              Logout
+            </Col>
+          </Row>
         {this.state.orderData.map((ele, index) =>{
           return(
           <Container className="order-number" key= {index}>
@@ -126,7 +147,7 @@ class Order extends React.Component{
                   Order Placed: 
                   <img className= "svg-class" src={require("./sort.svg")} alt="sort logo" />
                 </Col>
-                <Col md={{size: 3, offset: 0}} className="light-class">
+                <Col md={{size: 2, offset: 1}} className="light-class">
                   Ship To:
                 </Col>
                 <Col md={{size: 2, offset: 1}} className="light-class">
@@ -141,7 +162,7 @@ class Order extends React.Component{
                 <Col md={{size: 3, offset: 0}} className="bold-class">
                   {formatTimeStamp(ele.updatedAt)}
                 </Col>
-                <Col md={{size: 3, offset: 0}} className="bold-class">
+                <Col md={{size: 2, offset: 1}} className="bold-class">
                   {getAddress(ele.addressShipping)}
                 </Col>
                 <Col md={{size: 2, offset: 1}} className="bold-class">
@@ -194,8 +215,35 @@ class Order extends React.Component{
         })}
          
       </div>
+      
     )
+    }
+    else{
+      return(
+        <div className="windows8">
+	        <div className="wBall" id="wBall_1">
+		      <div className="wInnerBall"></div>
+          </div>
+          <div className="wBall" id="wBall_2">
+            <div className="wInnerBall"></div>
+          </div>
+          <div className="wBall" id="wBall_3">
+            <div className="wInnerBall"></div>
+          </div>
+          <div className="wBall" id="wBall_4">
+            <div className="wInnerBall"></div>
+          </div>
+          <div className="wBall" id="wBall_5">
+            <div className="wInnerBall"></div>
+          </div>
+        </div>
+      )
+    }
   }
+}
+
+Order.contextTypes = {
+  router: PropTypes.object.isRequired
 }
 
 export default Order;

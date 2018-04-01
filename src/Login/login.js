@@ -1,7 +1,6 @@
 import React from 'react';
 import './login.css';
 import { Col, Row , Container} from 'reactstrap';
-import cookies from 'react-cookie';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 
@@ -20,27 +19,56 @@ var contStyle = {
 
 class Login extends React.Component{
 
+  constructor(){
+    super();
+
+    this.handleEmailKeyUp = this.keyUpHandler.bind(this, 'EmailInput');
+    this.handlePwdKeyUp = this.keyUpHandler.bind(this, 'PwdInput');
+    this.handleAuthentication = this.loginVerfification.bind(this);
+    this.enterKey = this.enterKey.bind(this);
+  }
+
+  keyUpHandler = function(ele, event){
+    this.setState({
+      [ele]: event.target.value
+    })
+  }
+
+  enterKey = function(event){
+    if (event.charCode === 13){
+      this.handleAuthentication();
+    }
+  }
+  
+  loginVerfification = function(){
+    $.ajax({
+      type: "POST",
+      url: 'http://18.217.124.196:3000/login',
+      dataType: "json",
+      data:{"userName": this.state.EmailInput, "password": this.state.PwdInput},
+      success: (response) => {
+       if (response.responseCode === 0){
+           localStorage.setItem('user_token', response.response.token);
+           localStorage.setItem('user_name', response.response.userName);
+           localStorage.setItem('user_group', response.response.groupName);
+           this.context.router.history.push('/orders');
+       }
+       else if (response.responseCode === -1){
+         console.log(response.errorMsg);
+       }
+      },
+      error: (err) => {
+       console.log(err);
+      }
+   });
+  }
+
   componentWillMount(){
     if(localStorage.getItem('user_token')){
       this.context.router.history.push('/orders');
     }
-    else{
-      $.ajax({
-         type: "POST",
-         url: 'http://18.217.124.196:3000/login',
-         dataType: "json",
-         data:{"userName": "mayank@thescalelabs.com", "password": "user@123"},
-         success: (response) => {
-           debugger;
-          if (response.responseCode == 0){
-              localStorage.setItem('user_token', response.response.token);
-              this.context.router.history.push('/orders');
-          }
-         },
-         error: (err) => {
-          debugger;
-         }
-      });
+    
+      
 
       // fetch('http://18.217.124.196:3000/login', {
       //   method: 'post',
@@ -62,7 +90,7 @@ class Login extends React.Component{
       // });
 
       // do ajax call
-    }
+    
   }
   render(){
     return(
@@ -75,9 +103,11 @@ class Login extends React.Component{
       </Row>
         <Row>
         <Col sm={{size: 5, offset: 1}} className="mt-5">
-            <input className= "inputEmail" type= "email" placeholder="Username" />
-            <input className= "inputEmail" type= "password" placeholder="Password" />
-            <button className="inputEmail buttonPrimary" size="lg" color="primary" type="submit">Sign in</button>
+            <input className= "inputEmail" type= "email" placeholder="Username" onChange={this.handleEmailKeyUp} />
+            <input className= "inputEmail" type= "password" placeholder="Password" 
+              onChange={this.handlePwdKeyUp} onKeyPress={this.enterKey}/>
+            <button className="inputEmail buttonPrimary" size="lg" color="primary" type="submit" 
+              onClick={this.handleAuthentication} >Sign in</button>
         </Col>
       </Row>
       </Container>

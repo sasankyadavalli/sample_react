@@ -1,6 +1,9 @@
 import React from 'react';
 import './login.css';
 import { Col, Row , Container} from 'reactstrap';
+import cookies from 'react-cookie';
+import $ from 'jquery';
+import PropTypes from 'prop-types';
 
 var contStyle = {
   boxShadow: "0 6px 30px 0 rgba(0, 0, 0, 0.2), 0 6px 30px 0 rgba(0, 0, 0, 0.19)",
@@ -16,6 +19,51 @@ var contStyle = {
 
 
 class Login extends React.Component{
+
+  componentWillMount(){
+    debugger;
+    if(localStorage.getItem('user')){
+      this.context.router.history.push('/orders');
+    }
+    else{
+      $.ajax({
+         type: "POST",
+         url: 'http://18.217.124.196:3000/login',
+         dataType: "json",
+         data:{"userName": "mayank@thescalelabs.com", "password": "user@123"},
+         success: (response) => {
+           debugger;
+          if (response.responseCode == 0){
+              localStorage.setItem('user', JSON.stringify(response));
+          }
+         },
+         error: (err) => {
+          debugger;
+         }
+      });
+
+      // fetch('http://18.217.124.196:3000/login', {
+      //   method: 'post',
+      //   headers: {
+      //     'Accept': 'application/json',
+      //     'Content-Type':'application/json'
+      //   },
+      //   mode: 'no-cors',
+      //   body: JSON.stringify({
+      //     "userName": "mayank@thescalelabs.com",
+      //     "password": "user@123"
+      //   })
+      // }).then(response => {
+      //   if (response.responseCode == 0){
+      //     localStorage.setItem('user', response);
+      //   }
+      // }).catch((err) => {
+      //   debugger;
+      // });
+
+      // do ajax call
+    }
+  }
   render(){
     return(
       <div>
@@ -37,5 +85,10 @@ class Login extends React.Component{
     )
   }
 }
+
+Login.contextTypes = {
+  router: PropTypes.object.isRequired
+}
+
 
 export default Login;

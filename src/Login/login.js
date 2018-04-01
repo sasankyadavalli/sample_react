@@ -21,8 +21,7 @@ var contStyle = {
 class Login extends React.Component{
 
   componentWillMount(){
-    debugger;
-    if(localStorage.getItem('user')){
+    if(localStorage.getItem('user_token')){
       this.context.router.history.push('/orders');
     }
     else{
@@ -34,7 +33,8 @@ class Login extends React.Component{
          success: (response) => {
            debugger;
           if (response.responseCode == 0){
-              localStorage.setItem('user', JSON.stringify(response));
+              localStorage.setItem('user_token', response.response.token);
+              this.context.router.history.push('/orders');
           }
          },
          error: (err) => {

@@ -1,9 +1,11 @@
 import React from 'react';
 import './order.css';
 import {Col, Row, Container} from 'reactstrap';
-import Result from './orders.json';
-import _ from 'lodash'
+import _ from 'lodash';
+import $ from 'jquery';
+
 const moment = require('moment');
+
 
 const getAddress = function(address){
   try {
@@ -53,7 +55,7 @@ class Order extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      orderData : Result.response.orders
+      orderData : []
     }
 
     this.sortDate = this.sortDate.bind(this);
@@ -72,6 +74,40 @@ class Order extends React.Component{
       this.setState({
         orderData: sortedArray
       });
+}
+
+  componentWillMount(){
+   if (localStorage.getItem('user_token')){
+       $.ajax({
+         type: "POST",
+         url: 'http://18.217.124.196:3000/getSellerOrders',
+         dataType: "json",
+         headers: {
+          "Authorization": localStorage.getItem('user_token'),
+          "Content-Type": "application/json"
+         },
+         data: JSON.stringify({
+          "userName": "mayank@thescalelabs.com",
+          "user": {
+            "sellerName": "orders@thescalelabs.com"
+          }
+         }),
+         success: (response) => {
+           this.setState({
+            orderData: response.response.orders
+           });
+         },
+         error: (err) => {
+          console.log(err);
+         }
+      });
+   }
+   else{
+    
+    this.context.history.push('/');
+   
+   }
+  
 }
 
   
